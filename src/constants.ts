@@ -9,6 +9,7 @@ export const KEYCODE_ENTER = 13;
 export const KEYCODE_SHIFT = 16;
 export const KEYCODE_TAB = 9;
 export const KEYCODE_BACKSPACE = 8;
+export const KEYCODE_CTRL = 17;
 
 export const KEYCODE_Q = 81; // 'Q' key
 export const KEYCODE_D = 81; // 'Q' key

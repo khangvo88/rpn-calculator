@@ -49,7 +49,11 @@ export const reversePolish = function (newExpr: string): number | string {
   console.log(stack);
 
   // TODO: handle results when input is not finished yet.
-  if (stack.length !== 1) {
+  if (stack.length === 0) {
+    // syntax wrong.
+    return Number.NaN;
+  }
+  if (stack.length > 1) {
     return "";
   } else {
     return stack[0];

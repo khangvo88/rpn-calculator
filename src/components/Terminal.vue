@@ -25,9 +25,12 @@ const receivedCommandHandler = function (msg: string): void {
   console.log(computedValue);
 
   let response: string = msg;
-  if (computedValue !== "") {
+  if (isNaN(Number(computedValue))) {
+    combinedCmd.value = '';
+  }
+  else if (computedValue !== "") {
     response = computedValue.toString();
-    combinedCmd.value = "";
+    combinedCmd.value = response;
   } else {
     combinedCmd.value = inputValue;
   }
@@ -42,13 +45,12 @@ const receivedCommandHandler = function (msg: string): void {
 </script>
 
 <template>
-  <div class="combined-cmd">
-    {{ combinedCmd }}
-  </div>
-
   <div class="cli">
     <h1>{{ title }}</h1>
     <div class="description">Enter q, or Ctrl + D to close the Calculator</div>
+    <div class="combined-cmd last-value">
+      Stored: {{ combinedCmd }}
+    </div>
     <Cursor
       @submit-command="receivedCommandHandler"
       @close-terminal="$emit('closeTerminal')"

@@ -3,11 +3,13 @@ import { defineComponent, reactive, toRefs } from "vue";
 
 import {
   ALLOWED_KEYS,
-  KEYCODE_BACKSPACE, KEYCODE_D,
-  KEYCODE_ENTER, KEYCODE_Q,
-  KEYCODE_QUIT_TRIGGER,
+  KEYCODE_BACKSPACE,
+  KEYCODE_CTRL,
+  KEYCODE_D,
+  KEYCODE_ENTER,
+  KEYCODE_Q,
   KEYCODE_SHIFT,
-  KEYCODE_TAB
+  KEYCODE_TAB,
 } from "../constants";
 
 export default defineComponent({
@@ -18,7 +20,7 @@ export default defineComponent({
     const state = reactive({
       cmd: "",
       cursorPosition: 0 as number,
-      errorMessage: '',
+      errorMessage: "",
     });
     return {
       ...toRefs(state),
@@ -34,6 +36,12 @@ export default defineComponent({
     cursorCmd() {
       return this.cmd?.[this.cursorPosition] || " ";
     },
+  },
+  created() {
+    this.$options.allowedKeys = ALLOWED_KEYS;
+    this.$nextTick(() => {
+      (this.$refs.currentCmd as HTMLElement).focus();
+    });
   },
   methods: {
     appendChar(char: string) {
@@ -75,11 +83,16 @@ export default defineComponent({
     down(e: {
       keyCode: number;
       key: string;
-      meta: boolean;
+      metaKey: boolean;
       ctrlKey: boolean;
     }): void {
-      this.errorMessage = '';
-      if (e.keyCode === 8 || e.key === "Backspace") {
+
+      // TODO: implement Ctrl + W
+      // TODO: implement Cmd + Left, Cmd + Right
+      // TODO: implement up (history)1273098612983
+
+      this.errorMessage = "";
+      if (e.keyCode === KEYCODE_BACKSPACE || e.key === "Backspace") {
         this._deleteChar(this.cursorPosition - 1);
         return;
       }
@@ -88,19 +101,21 @@ export default defineComponent({
         return;
       }
 
-      if (!e.meta && this.$options.allowedKeys.includes(e.key)) {
+      if (this.$options.allowedKeys.includes(e.key)) {
         if (e.key === "Tab" || e.keyCode === KEYCODE_TAB) {
           this.appendChar(" ");
         } else {
           this.appendChar(e.key);
         }
         this.scrollToLastCommand();
-      }
-      else {
-        if (e.keyCode !== KEYCODE_SHIFT && e.keyCode !== KEYCODE_ENTER) {
-          this.errorMessage = `Sorry. "${e.key}" are not allowed in this terminal.`
+      } else {
+        if (
+          e.keyCode !== KEYCODE_SHIFT &&
+          e.keyCode !== KEYCODE_ENTER &&
+          e.keyCode !== KEYCODE_CTRL && !e.metaKey
+        ) {
+          this.errorMessage = `Sorry. "${e.key}" (Code: ${e.keyCode}) are not allowed in this terminal.`;
         }
-        // }
       }
     },
     // del() {
@@ -108,21 +123,15 @@ export default defineComponent({
     //   this._deleteChar(this.cursorPosition);
     // },
   },
-  created() {
-    this.$options.allowedKeys = ALLOWED_KEYS;
-    this.$nextTick(() => {
-      this.$refs.currentCmd.focus();
-    });
-  },
 });
 </script>
 
 <template>
   <div class="terminal-description">
-<!--    <div>-->
-<!--      <div>CMD: {{ cmd }} </div>-->
-<!--      <div>Position: {{ cursorPosition }}</div>-->
-<!--    </div>-->
+    <!--    <div>-->
+    <!--      <div>CMD: {{ cmd }} </div>-->
+    <!--      <div>Position: {{ cursorPosition }}</div>-->
+    <!--    </div>-->
 
     <div v-if="errorMessage" class="message message--alert">
       {{ errorMessage }}
