@@ -34,7 +34,7 @@ const receivedCommandHandler = function (msg: string): void {
   <div class="cli">
     <h1>{{ title }}</h1>
     <div class="description">Enter q, or Ctrl + D to close the Calculator</div>
-    <Cursor v-on:submit-command="receivedCommandHandler">
+    <Cursor @submit-command="receivedCommandHandler">
       <span v-for="(item, index) in cmds" :key="index">
         $ {{ item.cmd }}
         <div>{{ item.response }}</div>

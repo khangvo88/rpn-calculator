@@ -53,7 +53,7 @@ export default defineComponent({
     left(): void {
       this.currentPosition = Math.min(0, this.currentPosition - 1);
     },
-    down(e: { keyCode: Number; key: string; meta: boolean }): void {
+    down(e: { keyCode: number; key: string; meta: boolean }): void {
       if (e.keyCode === 8 || e.key === "Backspace") {
         this._deleteChar(this.currentPosition - 1);
       }
@@ -84,7 +84,7 @@ export default defineComponent({
     @keydown.delete="del"
   >
     <slot></slot>
-    <span class="current-cmd" ref="currentCmd">
+    <span ref="currentCmd" class="current-cmd">
       <span class="prefix">$ &nbsp;</span>
       <span v-for="(item, idx) in cmd" :key="idx">
         <div>
