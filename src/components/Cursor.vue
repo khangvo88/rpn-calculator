@@ -3,7 +3,7 @@ import { defineComponent, reactive, toRefs } from "vue";
 
 import {
   ALLOWED_KEYS,
-  KEYCODE_BACKSPACE,
+  KEYCODE_BACKSPACE, KEYCODE_C,
   KEYCODE_CTRL,
   KEYCODE_D,
   KEYCODE_ENTER,
@@ -15,7 +15,7 @@ import {
 export default defineComponent({
   name: "TerminalCursor",
   // TODO: add typescript-check for emits
-  emits: ["submitCommand", "closeTerminal", "sendErrorMessage"],
+  emits: ["submitCommand", "closeTerminal", "sendErrorMessage", "resetKeydown"],
   setup() {
     // TODO: split cmd into composes and cursor into `composable/input.js` && `composable/cursor.js`
     const state = reactive({
@@ -39,12 +39,11 @@ export default defineComponent({
   },
   created() {
     this.$options.allowedKeys = ALLOWED_KEYS;
-    this.$nextTick(() => {
-      (this.$refs.currentCmd as HTMLElement).focus();
-    });
+
+    this.focusCursor();
   },
   methods: {
-    appendChar(char: string) {
+    _appendChar(char: string) {
       this.cmd =
         this.cmd.slice(0, this.cursorPosition + 1) +
         char +
@@ -59,6 +58,11 @@ export default defineComponent({
         el.scrollIntoView();
       });
     },
+    focusCursor() {
+      this.$nextTick(() => {
+        (this.$refs.currentCmd as HTMLElement).focus();
+      });
+    },
     _deleteChar(position: number): void {
       if (position < 0 || position > this.cmd.length) {
         return;
@@ -68,6 +72,11 @@ export default defineComponent({
       this.cursorPosition = Math.max(0, this.cursorPosition - 1);
     },
     enter(): void {
+      if (!this.cmd) {
+        this.$emit('sendErrorMessage', 'Please input some values')
+        return;
+      }
+
       this.$emit("submitCommand", this.cmd);
       this.cmd = "";
       this.cursorPosition = 0;
@@ -98,12 +107,18 @@ export default defineComponent({
         this.$emit("closeTerminal");
         return;
       }
+      if (e.keyCode === KEYCODE_C) {
+        this.cmd = '';
+        this.$emit('resetKeydown');
+        this.focusCursor();
+        return;
+      }
 
       if (this.$options.allowedKeys.includes(e.key)) {
         if (e.key === "Tab" || e.keyCode === KEYCODE_TAB) {
-          this.appendChar(" ");
+          this._appendChar(" ");
         } else {
-          this.appendChar(e.key);
+          this._appendChar(e.key);
         }
         this.scrollToLastCommand();
       } else {

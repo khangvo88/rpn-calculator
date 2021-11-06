@@ -26,7 +26,7 @@ defineProps<{
 
   .message {
     font-size: 12px;
-    &--alert {
+    &--error {
       color: red;
     }
 

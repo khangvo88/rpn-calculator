@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Cursor from "./Cursor.vue";
-import { defineEmits, defineProps, ref } from "vue";
+import {defineEmits, defineProps, ref} from "vue";
 
-import { ICommand } from "../types/Command";
-import { IMessage, MESSAGE_TYPE } from "../types/Message";
-import { reversePolish } from "../utils/calc";
+import {ICommand} from "../types/Command";
+import {IMessage, MESSAGE_TYPE} from "../types/Message";
+import {reversePolish} from "../utils/calc";
 import MessageBlock from "./MessageBlock.vue";
 
 defineProps<{ title: string }>();
@@ -36,32 +36,45 @@ const setWarningMessage = (msg: string): void => {
     type: MESSAGE_TYPE.WARNING,
   };
 };
-
 const clearMessage = (): void => {
   message.value = {
     message: "",
     type: MESSAGE_TYPE.WARNING,
   };
 };
+const resetCalculator = (): void => {
+  combinedCmd.value = "";
+  cmds.value = [];
+  message.value = {
+    message: 'Your calculator was reset',
+    type: MESSAGE_TYPE.WARNING,
+  }
+}
 
 const receivedCommandHandler = function (msg: string): void {
   const inputValue: string = combinedCmd.value + " " + msg;
-  const computedValue = reversePolish(inputValue);
+  const computedValues = reversePolish(inputValue);
 
   clearMessage();
 
   let response: string = msg;
-  if (isNaN(Number(computedValue))) {
+  if (!computedValues?.length) {
     setErrorMessage(
       "There is something wrong with syntax. The calculator cleared"
     );
-    combinedCmd.value = "";
-  } else if (computedValue !== "") {
-    response = computedValue.toString();
-    combinedCmd.value = response;
-  } else {
-    setWarningMessage("Waiting for more input");
-    combinedCmd.value = inputValue;
+    combinedCmd.value = '';
+  }
+  else {
+    const lastValue : number = Number(computedValues[computedValues.length - 1]);
+    response = lastValue.toString();
+
+    if (isNaN(lastValue) || !isFinite(lastValue)) {
+      setErrorMessage('last computed is not a number. Reset last value');
+      combinedCmd.value = '';
+    }
+    else {
+      combinedCmd.value = computedValues.join(' ');
+    }
   }
 
   const cmdItem: ICommand = {
@@ -76,7 +89,10 @@ const receivedCommandHandler = function (msg: string): void {
 <template>
   <div class="cli">
     <h1>{{ title }}</h1>
-    <div class="description">Enter q, or Ctrl + D to close the Calculator</div>
+    <div class="description">
+      <div>Enter q, or Ctrl + D to close the Calculator</div>
+      <div>Enter c to reset the value</div>
+    </div>
     <div class="combined-cmd last-value">Stored: {{ combinedCmd }}</div>
 
     <MessageBlock :message="message.message" :type="message.type" />
@@ -84,6 +100,7 @@ const receivedCommandHandler = function (msg: string): void {
       @submit-command="receivedCommandHandler"
       @close-terminal="$emit('closeTerminal')"
       @send-error-message="setErrorMessage"
+      @reset-keydown="resetCalculator"
     >
       <span v-for="(item, index) in cmds" :key="index">
         $ {{ item.cmd }}

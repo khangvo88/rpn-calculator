@@ -11,5 +11,6 @@ export const KEYCODE_TAB = 9;
 export const KEYCODE_BACKSPACE = 8;
 export const KEYCODE_CTRL = 17;
 
-export const KEYCODE_Q = 81; // 'Q' key
-export const KEYCODE_D = 81; // 'Q' key
+export const KEYCODE_Q = 81;
+export const KEYCODE_D = 68;
+export const KEYCODE_C = 67;
