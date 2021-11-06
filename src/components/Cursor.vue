@@ -3,7 +3,8 @@ import { defineComponent, reactive, toRefs } from "vue";
 
 import {
   ALLOWED_KEYS,
-  KEYCODE_BACKSPACE, KEYCODE_C,
+  KEYCODE_BACKSPACE,
+  KEYCODE_C,
   KEYCODE_CTRL,
   KEYCODE_D,
   KEYCODE_ENTER,
@@ -21,6 +22,7 @@ export default defineComponent({
     const state = reactive({
       cmd: "",
       cursorPosition: 0 as number,
+      isFocus: false,
     });
     return {
       ...toRefs(state),
@@ -50,9 +52,15 @@ export default defineComponent({
         this.cmd.slice(this.cursorPosition + 1);
       this.cursorPosition += 1;
     },
+    _deleteChar(position: number): void {
+      if (position < 0 || position > this.cmd.length) {
+        return;
+      }
+      const val = this.cmd;
+      this.cmd = val.slice(0, position) + val.slice(position + 1);
+      this.cursorPosition = Math.max(0, this.cursorPosition - 1);
+    },
     scrollToLastCommand() {
-      // el.scrollTop = el.scrollHeight;
-
       this.$nextTick(() => {
         const el = this.$refs.currentCmd as HTMLElement;
         el.scrollIntoView();
@@ -63,17 +71,9 @@ export default defineComponent({
         (this.$refs.currentCmd as HTMLElement).focus();
       });
     },
-    _deleteChar(position: number): void {
-      if (position < 0 || position > this.cmd.length) {
-        return;
-      }
-      const val = this.cmd;
-      this.cmd = val.slice(0, position) + val.slice(position + 1);
-      this.cursorPosition = Math.max(0, this.cursorPosition - 1);
-    },
     enter(): void {
       if (!this.cmd) {
-        this.$emit('sendErrorMessage', 'Please input some values')
+        this.$emit("sendErrorMessage", "Please input some values");
         return;
       }
 
@@ -108,8 +108,8 @@ export default defineComponent({
         return;
       }
       if (e.keyCode === KEYCODE_C) {
-        this.cmd = '';
-        this.$emit('resetKeydown');
+        this.cmd = "";
+        this.$emit("resetKeydown");
         this.focusCursor();
         return;
       }
@@ -157,6 +157,8 @@ export default defineComponent({
     @keydown.enter="enter"
     @keydown.left="left"
     @keydown.right="right"
+    @focusin="isFocus = true"
+    @focusout="isFocus = false"
   >
     <slot></slot>
     <span ref="currentCmd" class="current-cmd" tabindex="-1">
@@ -171,7 +173,7 @@ export default defineComponent({
           v-html="chr !== ' ' ? chr : '&nbsp;'"
         ></span>
       </span>
-      <span id="cursor">
+      <span id="cursor" :class="{ flicker: isFocus }">
         <span
           class="char"
           v-html="cursorCmd !== ' ' ? cursorCmd : '&nbsp;'"
@@ -192,6 +194,18 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
+@keyframes flickerAnimation {
+  0% {
+    background-color: rgba(white, 0.5);
+  }
+  50% {
+    background-color: rgba(white, 0);
+  }
+  100% {
+    background-color: rgba(white, 0.5);
+  }
+}
+
 #cmd {
   background: $color_cli_background;
   flex-grow: 1;
@@ -207,8 +221,11 @@ export default defineComponent({
 }
 
 #cursor {
-  background-color: white;
-  //opacity: 0.5;
+  background-color: rgba(white, 0.5);
+
+  &.flicker {
+    animation: flickerAnimation 1s infinite;
+  }
 }
 
 .terminal-description {

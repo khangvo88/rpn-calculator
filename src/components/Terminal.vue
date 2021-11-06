@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Cursor from "./Cursor.vue";
-import {defineEmits, defineProps, ref} from "vue";
+import { defineEmits, defineProps, ref } from "vue";
 
-import {ICommand} from "../types/Command";
-import {IMessage, MESSAGE_TYPE} from "../types/Message";
-import {reversePolish} from "../utils/calc";
+import { ICommand } from "../types/Command";
+import { IMessage, MESSAGE_TYPE } from "../types/Message";
+import { reversePolishNotion } from "../utils/calc";
 import MessageBlock from "./MessageBlock.vue";
 
 defineProps<{ title: string }>();
@@ -46,14 +46,14 @@ const resetCalculator = (): void => {
   combinedCmd.value = "";
   cmds.value = [];
   message.value = {
-    message: 'Your calculator was reset',
+    message: "Your calculator was reset",
     type: MESSAGE_TYPE.WARNING,
-  }
-}
+  };
+};
 
 const receivedCommandHandler = function (msg: string): void {
   const inputValue: string = combinedCmd.value + " " + msg;
-  const computedValues = reversePolish(inputValue);
+  const computedValues = reversePolishNotion(inputValue);
 
   clearMessage();
 
@@ -62,18 +62,21 @@ const receivedCommandHandler = function (msg: string): void {
     setErrorMessage(
       "There is something wrong with syntax. The calculator cleared"
     );
-    combinedCmd.value = '';
-  }
-  else {
-    const lastValue : number = Number(computedValues[computedValues.length - 1]);
+    combinedCmd.value = "";
+  } else {
+    const lastValue = Number(computedValues[computedValues.length - 1]);
     response = lastValue.toString();
 
     if (isNaN(lastValue) || !isFinite(lastValue)) {
-      setErrorMessage('last computed is not a number. Reset last value');
-      combinedCmd.value = '';
-    }
-    else {
-      combinedCmd.value = computedValues.join(' ');
+      setWarningMessage("last computed is not a number. Reset last value");
+      combinedCmd.value = "";
+    } else {
+      if (computedValues.length > 1) {
+        setWarningMessage("Waiting for more input.");
+      } else {
+        clearMessage();
+      }
+      combinedCmd.value = computedValues.join(" ");
     }
   }
 
@@ -95,7 +98,11 @@ const receivedCommandHandler = function (msg: string): void {
     </div>
     <div class="combined-cmd last-value">Stored: {{ combinedCmd }}</div>
 
-    <MessageBlock :message="message.message" :type="message.type" />
+    <MessageBlock
+      class="message-block"
+      :message="message.message"
+      :type="message.type"
+    />
     <Cursor
       @submit-command="receivedCommandHandler"
       @close-terminal="$emit('closeTerminal')"
@@ -113,20 +120,31 @@ const receivedCommandHandler = function (msg: string): void {
 
 <style lang="scss" scoped>
 .cli {
-  padding: 5px;
   background-color: $color_cli_background;
   color: $color_cli_text;
   text-align: left;
   margin: 0;
-  width: 800px;
-  height: 400px;
+  //width: 800px;
+  width: calc(100vw - 20px);
+  min-height: 400px;
+  height: 100%;
   display: flex;
   flex-direction: column;
+
+  > * {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 
 h1 {
-  margin-top: 0;
+  padding-top: 10px;
   margin-bottom: 0.2em;
+}
+
+.message-block {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .description {

@@ -6,8 +6,7 @@ let terminalEnabled = ref(true);
 </script>
 
 <template>
-  <div>My title</div>
-  <div v-if="!terminalEnabled">
+  <div v-if="!terminalEnabled" class="calculator-info">
     <div>
       You have just closed the terminal, click below button to open again
     </div>
@@ -16,9 +15,20 @@ let terminalEnabled = ref(true);
 
   <Terminal
     v-if="terminalEnabled"
-    title="My Calculator"
+    class="terminal"
+    title="CLI RPN Calculator"
     @close-terminal="terminalEnabled = false"
   />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.terminal {
+  height: 80vh;
+}
+
+.calculator-info {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+}
+</style>

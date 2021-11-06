@@ -3,7 +3,9 @@
  * @param newExpr: the string that represents the input
  * @returns {number|string}: return the last value, or the remaning input
  */
-export const reversePolish = function (newExpr: string): Array<number | string> {
+export const reversePolishNotion = function (
+  newExpr: string
+): Array<number | string> {
   let expr = newExpr.trim().split(" ");
   let stack: Array<number> = [];
 
