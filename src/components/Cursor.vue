@@ -4,9 +4,9 @@ import { defineComponent, reactive, toRefs } from "vue";
 import { ALLOWED_KEYS } from "../constants";
 
 export default defineComponent({
-  name: "Cursor",
+  name: "TerminalCursor",
   emits: ["submitCommand"],
-  setup(props) {
+  setup() {
     const state = reactive({
       cmd: "",
       currentPosition: 0 as number,

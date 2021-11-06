@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import Cursor from "./Cursor.vue";
-import { defineProps, PropType, ref } from "vue";
+import { defineProps, ref } from "vue";
 
 import { ICommand } from "../types/Command";
 import { reversePolish } from "../utils/calc";
 
 defineProps<{ title: string }>();
 
-let cmds = ref<ICommand[]>([
-  { cmd: "Some CMD here", response: "Can not find ..." },
-  { cmd: "cmd 2", response: "Can not find ..." },
-  { cmd: "cmd 3", response: "Command result ..." },
-  { cmd: "Some CMD here", response: "Can not find ..." },
-  { cmd: "cmd 2", response: "Can not find ..." },
-  { cmd: "cmd 3", response: "Command result ..." },
-]);
+let cmds = ref<ICommand[]>([]);
 
 const appendCommand = (item: ICommand) => {
   cmds.value.push(item);
