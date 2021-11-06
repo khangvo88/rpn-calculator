@@ -1,24 +1,30 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 
-import { ALLOWED_KEYS } from "../constants";
+import {
+  ALLOWED_KEYS,
+  KEYCODE_BACKSPACE, KEYCODE_D,
+  KEYCODE_ENTER, KEYCODE_Q,
+  KEYCODE_QUIT_TRIGGER,
+  KEYCODE_SHIFT,
+  KEYCODE_TAB
+} from "../constants";
 
 export default defineComponent({
   name: "TerminalCursor",
-  emits: ["submitCommand"],
+  emits: ["submitCommand", "closeTerminal"],
   setup() {
+    // TODO: split cmd into composes and cursor into `composable/input.js` && `composable/cursor.js`
     const state = reactive({
       cmd: "",
       cursorPosition: 0 as number,
+      errorMessage: '',
     });
     return {
       ...toRefs(state),
     };
   },
   computed: {
-    cursorAtStart() {
-      return this.cmd.length === 0 && this.cursorPosition === 0;
-    },
     leftCmd() {
       return this.cmd.slice(0, Math.max(0, this.cursorPosition));
     },
@@ -66,16 +72,35 @@ export default defineComponent({
     left(): void {
       this.cursorPosition = Math.max(0, this.cursorPosition - 1);
     },
-    down(e: { keyCode: number; key: string; meta: boolean }): void {
-      console.log(e.key, e.keyCode, Number.isInteger(e.key), e);
-
+    down(e: {
+      keyCode: number;
+      key: string;
+      meta: boolean;
+      ctrlKey: boolean;
+    }): void {
+      this.errorMessage = '';
       if (e.keyCode === 8 || e.key === "Backspace") {
         this._deleteChar(this.cursorPosition - 1);
+        return;
+      }
+      if (e.keyCode === KEYCODE_Q || (e.keyCode === KEYCODE_D && e.ctrlKey)) {
+        this.$emit("closeTerminal");
+        return;
       }
 
-      if (!e.meta && ALLOWED_KEYS.includes(e.key)) {
+      if (!e.meta && this.$options.allowedKeys.includes(e.key)) {
+        if (e.key === "Tab" || e.keyCode === KEYCODE_TAB) {
+          this.appendChar(" ");
+        } else {
+          this.appendChar(e.key);
+        }
         this.scrollToLastCommand();
-        this.appendChar(e.key);
+      }
+      else {
+        if (e.keyCode !== KEYCODE_SHIFT && e.keyCode !== KEYCODE_ENTER) {
+          this.errorMessage = `Sorry. "${e.key}" are not allowed in this terminal.`
+        }
+        // }
       }
     },
     // del() {
@@ -83,16 +108,25 @@ export default defineComponent({
     //   this._deleteChar(this.cursorPosition);
     // },
   },
+  created() {
+    this.$options.allowedKeys = ALLOWED_KEYS;
+    this.$nextTick(() => {
+      this.$refs.currentCmd.focus();
+    });
+  },
 });
 </script>
 
 <template>
-  <div>
-    <div>CMD: {{ cmd }}</div>
-    <div>Position: {{ cursorPosition }}</div>
-    <div>{{ leftCmd }} | {{ rightCmd }}</div>
+  <div class="terminal-description">
+<!--    <div>-->
+<!--      <div>CMD: {{ cmd }} </div>-->
+<!--      <div>Position: {{ cursorPosition }}</div>-->
+<!--    </div>-->
 
-    <div>Cursor: {{ cursorAtStart ? "True" : "False" }}</div>
+    <div v-if="errorMessage" class="message message--alert">
+      {{ errorMessage }}
+    </div>
   </div>
   <div
     id="cmd"
@@ -103,7 +137,7 @@ export default defineComponent({
     @keydown.right="right"
   >
     <slot></slot>
-    <span ref="currentCmd" class="current-cmd">
+    <span ref="currentCmd" class="current-cmd" tabindex="-1">
       <span class="prefix">$ &nbsp;</span>
 
       <!-- eslint-disable vue/no-v-html -->
@@ -146,8 +180,27 @@ export default defineComponent({
   display: inline-block;
 }
 
+.current-cmd:focus {
+  outline: none;
+}
+
 #cursor {
   background-color: white;
   //opacity: 0.5;
+}
+
+.terminal-description {
+  min-height: 20px;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid yellow;
+  margin-bottom: 5px;
+
+  .message {
+    font-size: 12px;
+    &--alert {
+      color: red;
+    }
+  }
 }
 </style>

@@ -4,18 +4,22 @@
  * @returns {number|string}: return the last value, or the remaning input
  */
 export const reversePolish = function (newExpr: string): number | string {
-  let expr = newExpr.split(" ");
+  let expr = newExpr.trim().split(" ");
   let stack: Array<number> = [];
 
   if (expr.length === 0) {
-    return 0;
+    return "";
   }
+
+  console.log(expr);
 
   for (let i = 0; i < expr.length; i++) {
     const val = expr[i];
+
     if (!isNaN(Number(val)) && isFinite(Number(val))) {
       // TODO: validate type and input correct one
       stack.push(Number(val));
+      console.log(stack);
     } else {
       let a = stack.pop();
       let b = stack.pop();
@@ -42,8 +46,10 @@ export const reversePolish = function (newExpr: string): number | string {
     }
   }
 
+  console.log(stack);
+
   // TODO: handle results when input is not finished yet.
-  if (stack.length > 1) {
+  if (stack.length !== 1) {
     return "";
   } else {
     return stack[0];
