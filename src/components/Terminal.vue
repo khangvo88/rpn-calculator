@@ -1,49 +1,68 @@
-<script setup>
-import Cursor from './Cursor.vue';
-import {defineComponent} from "vue";
+<script setup lang="ts">
+import Cursor from "./Cursor.vue";
+import { defineProps, PropType, ref } from "vue";
 
-defineComponent({
-  data() {
-    return {
-      cmds: [],
-      historyValues: '',
-      currentCmd: {
-        value: '',
-        position: 0
-      }
-    }
-  },
-  methods: {
+import { ICommand } from "../types/Command";
+import { reversePolish } from "../utils/calc";
 
-  },
-  computed: {
-    cmds: {
-      get() {
-        return this.items;
-      },
-      set (val) {
-        this.historyValues = this.historyValues + ' ' + val;
-        let data = {
-          cmd: val,
-          response: 'TODO: calculate ' + this.historyValues
-        }
-      }
-    }
-  }
-})
+defineProps<{ title: string }>();
+
+let cmds = ref<ICommand[]>([
+  { cmd: "Some CMD here", response: "Can not find ..." },
+  { cmd: "cmd 2", response: "Can not find ..." },
+  { cmd: "cmd 3", response: "Command result ..." },
+  { cmd: "Some CMD here", response: "Can not find ..." },
+  { cmd: "cmd 2", response: "Can not find ..." },
+  { cmd: "cmd 3", response: "Command result ..." },
+]);
+
+const appendCommand = (item: ICommand) => {
+  cmds.value.push(item);
+};
+
+const receivedCommandHandler = function (msg: string): void {
+  const cmdItem: ICommand = {
+    cmd: msg,
+    response: reversePolish(msg).toString(),
+  };
+
+  appendCommand(cmdItem);
+};
 </script>
 
 <template>
-  <Cursor />
-  <span>$ &nbsp;</span>
-  <span v-for="(item, index) in c_cmd" :key="index"
-  >$ {{ item.cmd }}
-      <div>{{ item.response }}</div>
-    <br />
-  </span>
-
+  <div class="cli">
+    <h1>{{ title }}</h1>
+    <div class="description">Enter q, or Ctrl + D to close the Calculator</div>
+    <Cursor v-on:submit-command="receivedCommandHandler">
+      <span v-for="(item, index) in cmds" :key="index">
+        $ {{ item.cmd }}
+        <div>{{ item.response }}</div>
+        <br />
+      </span>
+    </Cursor>
+  </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.cli {
+  padding: 5px;
+  background-color: $color_cli_background;
+  color: $color_cli_text;
+  text-align: left;
+  margin: 0;
+  width: 800px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
 
+h1 {
+  margin-top: 0;
+  margin-bottom: 0.2em;
+}
+
+.description {
+  margin-bottom: 20px;
+}
 </style>

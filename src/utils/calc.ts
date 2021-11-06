@@ -3,11 +3,9 @@
  * @param newExpr
  * @returns {number}
  */
-
-export const reversePolish = function (newExpr: string): number|string {
-
-  let expr = newExpr.split(' ');
-  let stack:Array<number> = [];
+export const reversePolish = function (newExpr: string): number | string {
+  let expr = newExpr.split(" ");
+  let stack: Array<number> = [];
 
   if (expr.length === 0) {
     return 0;
@@ -19,7 +17,6 @@ export const reversePolish = function (newExpr: string): number|string {
       // TODO: validate type and input correct one
       stack.push(Number(val));
     } else {
-
       let a = stack.pop();
       let b = stack.pop();
       // @ts-ignore
@@ -28,26 +25,27 @@ export const reversePolish = function (newExpr: string): number|string {
       const float_b = parseFloat(b);
 
       switch (val) {
-        case '+':
+        case "+":
           stack.push(float_a + float_b);
           break;
-        case '-':
+        case "-":
           stack.push(float_b - float_a);
           break;
-        case '*':
+        case "*":
           stack.push(float_b * float_a);
-          break
-        case '/':
+          break;
+        case "/":
           // TODO: handle divide by zero
           stack.push(float_b / float_a);
-          break
+          break;
       }
     }
   }
 
+  // TODO: handle results when input is not finished yet.
   if (stack.length > 1) {
-    return '';
+    return "";
   } else {
     return stack[0];
   }
-}
+};
