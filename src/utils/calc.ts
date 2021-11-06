@@ -1,7 +1,7 @@
 /**
- *
- * @param newExpr
- * @returns {number}
+ * Calculate the reverse polish notion from arbitrary string
+ * @param newExpr: the string that represents the input
+ * @returns {number|string}: return the last value, or the remaning input
  */
 export const reversePolish = function (newExpr: string): number | string {
   let expr = newExpr.split(" ");
