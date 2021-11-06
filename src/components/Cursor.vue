@@ -14,13 +14,13 @@ import {
 
 export default defineComponent({
   name: "TerminalCursor",
-  emits: ["submitCommand", "closeTerminal"],
+  // TODO: add typescript-check for emits
+  emits: ["submitCommand", "closeTerminal", "sendErrorMessage"],
   setup() {
     // TODO: split cmd into composes and cursor into `composable/input.js` && `composable/cursor.js`
     const state = reactive({
       cmd: "",
       cursorPosition: 0 as number,
-      errorMessage: "",
     });
     return {
       ...toRefs(state),
@@ -86,12 +86,10 @@ export default defineComponent({
       metaKey: boolean;
       ctrlKey: boolean;
     }): void {
-
       // TODO: implement Ctrl + W
       // TODO: implement Cmd + Left, Cmd + Right
       // TODO: implement up (history)1273098612983
 
-      this.errorMessage = "";
       if (e.keyCode === KEYCODE_BACKSPACE || e.key === "Backspace") {
         this._deleteChar(this.cursorPosition - 1);
         return;
@@ -112,9 +110,11 @@ export default defineComponent({
         if (
           e.keyCode !== KEYCODE_SHIFT &&
           e.keyCode !== KEYCODE_ENTER &&
-          e.keyCode !== KEYCODE_CTRL && !e.metaKey
+          e.keyCode !== KEYCODE_CTRL &&
+          !e.metaKey
         ) {
-          this.errorMessage = `Sorry. "${e.key}" (Code: ${e.keyCode}) are not allowed in this terminal.`;
+          const msg = `Sorry. "${e.key}" (Code: ${e.keyCode}) are not allowed in this terminal.`;
+          this.$emit("sendErrorMessage", msg);
         }
       }
     },
@@ -127,16 +127,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="terminal-description">
-    <!--    <div>-->
-    <!--      <div>CMD: {{ cmd }} </div>-->
-    <!--      <div>Position: {{ cursorPosition }}</div>-->
-    <!--    </div>-->
+  <!--  &lt;!&ndash; For debug only  &ndash;&gt;-->
+  <!--  <div class="terminal-description">-->
+  <!--    <div>-->
+  <!--      <div>CMD: {{ cmd }} </div>-->
+  <!--      <div>Position: {{ cursorPosition }}</div>-->
+  <!--    </div>-->
+  <!--  </div>-->
 
-    <div v-if="errorMessage" class="message message--alert">
-      {{ errorMessage }}
-    </div>
-  </div>
   <div
     id="cmd"
     tabindex="0"
@@ -204,12 +202,5 @@ export default defineComponent({
   border-radius: 6px;
   border: 1px solid yellow;
   margin-bottom: 5px;
-
-  .message {
-    font-size: 12px;
-    &--alert {
-      color: red;
-    }
-  }
 }
 </style>
