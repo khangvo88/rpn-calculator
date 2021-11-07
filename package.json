@@ -1,6 +1,9 @@
 {
   "name": "cli-rpn-calculator",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
