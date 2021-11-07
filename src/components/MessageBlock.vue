@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
 import { MESSAGE_TYPE } from "../types/Message";
 
-
+// Disable since it conflict with message of Vue 3 SFC
+// eslint-disable-next-line no-undef
 defineProps<{
-  message: any; // has error on if defined string
+  message: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   type: MESSAGE_TYPE;
 }>();
-
 </script>
 
 <template>

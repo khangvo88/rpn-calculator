@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import Cursor from "./Cursor.vue";
-import { defineProps, ref } from "vue";
+import TerminalCursor from "./TerminalCursor.vue";
+import { ref } from "vue";
 
 import { ICommand } from "../types/Command";
 import { IMessage, MESSAGE_TYPE } from "../types/Message";
 import { reversePolishNotion } from "../utils/calc";
 import MessageBlock from "./MessageBlock.vue";
 
-defineProps<{ title: string }>();
+// eslint-disable-next-line no-undef
+defineProps<{ title?: string }>();
 
+// eslint-disable-next-line no-undef
 defineEmits<{
   (e: "closeTerminal"): void;
 }>();
@@ -103,7 +105,7 @@ const receivedCommandHandler = function (msg: string): void {
       :message="message.message"
       :type="message.type"
     />
-    <Cursor
+    <TerminalCursor
       @submit-command="receivedCommandHandler"
       @close-terminal="$emit('closeTerminal')"
       @send-error-message="setErrorMessage"
@@ -114,7 +116,7 @@ const receivedCommandHandler = function (msg: string): void {
         <div>{{ item.response }}</div>
         <br />
       </span>
-    </Cursor>
+    </TerminalCursor>
   </div>
 </template>
 

@@ -13,9 +13,9 @@ export default defineConfig({
       },
     },
   },
-  // resolve: {
-  //   alias: {
-  //     "@": path.resolve(__dirname, "/src"),
-  //   },
-  // },
+  resolve: {
+    alias: {
+      "@App": path.resolve(__dirname, "/src"),
+    },
+  },
 });

@@ -4,5 +4,9 @@ module.exports = {
   transform: {
     "^.+\\.ts$": "ts-jest",
     "^.+\\.vue$": "vue-jest",
+    "^.+\\.jsx?$": "babel-jest",
+  },
+  moduleNameMapper: {
+    "^@App/(.*)$": "<rootDir>/src/$1",
   },
 };
