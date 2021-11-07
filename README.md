@@ -4,7 +4,7 @@
 
 ## 1. Description
 
-Simple command-line reverse polish notation (RPN) calculator
+Simple command-line reverse polish notation (RPN) calculator by Vue 3
 
 Features:
 
@@ -15,12 +15,21 @@ Features:
 
 **[Demo Link](https://cli-rpn-calculator.herokuapp.com/) on Heroku**
 
+### Browser supports
+
+Vite use default browserlist query as follows
+`defaults and supports es6-module and supports es6-module-dynamic-import, not opera > 0, not samsung > 0, not and_qq > 0`
+
+Vue3 does not support IE11 or below.
+
+
 ## 2. Architectural
 
 - Vue 3:
   - Vue provides the Composition API that helps to refactor and reuse the components much more easy. Vue is much simpler and not depend on JSX. For this simple app, I choose Vue 3 as the main stack.
+  - I make use Vue SFC <script setup> as much as possible, since it make code cleaner and application faster. For complicated components logic such as <TerminnalCursor>, we still use the traditional structure.
 - Typescript:
-  - prevent error type, which can help decrease the
+  - prevent error type, decrease the bug when working together in teams or when deploying to production.
 - Vite: Building tools made by Vue's author. It is serve HRM lightning Fast and support Vue3/Typescript by default
 - Heroku: free simple cloud service.
 - Testing: Jest
