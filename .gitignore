@@ -1,5 +1,7 @@
 node_modules
 .DS_Store
-dist
 dist-ssr
 *.local
+
+## Comment this to deploy static site in Heroku
+#dist
