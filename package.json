@@ -11,7 +11,7 @@
     "test": "jest tests",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write",
-    "format-lint": "yarn format && yarn lint"
+    "check": "yarn format && yarn lint && vue-tsc --noEmit"
   },
   "dependencies": {
     "sass": "^1.43.4",

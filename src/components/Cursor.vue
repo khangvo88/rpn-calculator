@@ -167,7 +167,7 @@ export default defineComponent({
       <!-- eslint-disable vue/no-v-html -->
       <span class="left-cmd">
         <span
-          v-for="(chr, idx) in leftCmd"
+          v-for="(chr, idx) in Array.from(leftCmd)"
           :key="`l-${idx}`"
           class="char"
           v-html="chr !== ' ' ? chr : '&nbsp;'"
@@ -182,7 +182,7 @@ export default defineComponent({
 
       <span class="right-cmd">
         <span
-          v-for="(chr, idx) in rightCmd"
+          v-for="(chr, idx) in Array.from(rightCmd)"
           :key="`r-${idx}`"
           class="char"
           v-html="chr !== ' ' ? chr : '&nbsp;'"

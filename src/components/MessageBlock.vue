@@ -2,10 +2,12 @@
 import { defineProps } from "vue";
 import { MESSAGE_TYPE } from "../types/Message";
 
+
 defineProps<{
-  message: string;
+  message: any; // has error on if defined string
   type: MESSAGE_TYPE;
 }>();
+
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Cursor from "./Cursor.vue";
-import { defineEmits, defineProps, ref } from "vue";
+import { defineProps, ref } from "vue";
 
 import { ICommand } from "../types/Command";
 import { IMessage, MESSAGE_TYPE } from "../types/Message";
