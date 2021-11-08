@@ -3,6 +3,8 @@ import { defineComponent, reactive, toRefs } from "vue";
 
 import {
   ALLOWED_KEYS,
+  KEYCODE_ARROW_LEFT,
+  KEYCODE_ARROW_RIGHT,
   KEYCODE_BACKSPACE,
   KEYCODE_C,
   KEYCODE_CTRL,
@@ -41,7 +43,9 @@ export default defineComponent({
     },
   },
   created() {
-    const keysInOperators = [...new Set(rpnCalculator.getAllowedOperators().join('').split(''))];
+    const keysInOperators = [
+      ...new Set(rpnCalculator.getAllowedOperators().join("").split("")),
+    ];
 
     this.$options.allowedKeys = ALLOWED_KEYS.concat(keysInOperators);
 
@@ -129,6 +133,8 @@ export default defineComponent({
           e.keyCode !== KEYCODE_SHIFT &&
           e.keyCode !== KEYCODE_ENTER &&
           e.keyCode !== KEYCODE_CTRL &&
+          e.keyCode !== KEYCODE_ARROW_LEFT &&
+          e.keyCode !== KEYCODE_ARROW_RIGHT &&
           !e.metaKey
         ) {
           const msg = `Sorry. "${e.key}" (Code: ${e.keyCode}) are not allowed in this terminal.`;
