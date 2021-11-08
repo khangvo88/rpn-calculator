@@ -46,15 +46,4 @@ export const reversePolishNotion = function (
   }
 
   return stack;
-
-  // // TODO: handle results when input is not finished yet.
-  // if (stack.length === 0) {
-  //   // syntax wrong.
-  //   return Number.NaN;
-  // }
-  // if (stack.length > 1) {
-  //   return stack.join(" ");
-  // } else {
-  //   return stack[0];
-  // }
 };

@@ -22,7 +22,6 @@ Vite use default browserlist query as follows
 
 Vue3 does not support IE11 or below.
 
-
 ## 2. Architectural
 
 - Vue 3:
