@@ -4,7 +4,7 @@ import { ref } from "vue";
 
 import { ICommand } from "../types/Command";
 import { IMessage, MESSAGE_TYPE } from "../types/Message";
-import { reversePolishNotion } from "../utils/calc";
+import rpnCalculator from "../utils/calculator/RpnCalculator";
 import MessageBlock from "./MessageBlock.vue";
 
 // eslint-disable-next-line no-undef
@@ -55,7 +55,7 @@ const resetCalculator = (): void => {
 
 const receivedCommandHandler = function (msg: string): void {
   const inputValue: string = combinedCmd.value + " " + msg;
-  const computedValues = reversePolishNotion(inputValue);
+  const computedValues = rpnCalculator.process(inputValue);
 
   clearMessage();
 

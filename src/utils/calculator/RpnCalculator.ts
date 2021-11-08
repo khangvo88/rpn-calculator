@@ -49,7 +49,7 @@ export class RpnCalculator {
       } else {
         if (!(val in this.operators)) {
           console.warn(
-            `${val} is not allowed. Allowed: ${Object.keys(this.operators).join(
+            `${val} is not allowed. Allowed: ${this.getAllowedOperators().join(
               " "
             )}`
           );

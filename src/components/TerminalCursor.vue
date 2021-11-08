@@ -12,6 +12,7 @@ import {
   KEYCODE_SHIFT,
   KEYCODE_TAB,
 } from "../constants";
+import rpnCalculator from "@App/utils/calculator/RpnCalculator";
 
 export default defineComponent({
   name: "TerminalCursor",
@@ -40,7 +41,9 @@ export default defineComponent({
     },
   },
   created() {
-    this.$options.allowedKeys = ALLOWED_KEYS;
+    const keysInOperators = [...new Set(rpnCalculator.getAllowedOperators().join('').split(''))];
+
+    this.$options.allowedKeys = ALLOWED_KEYS.concat(keysInOperators);
 
     this.focusCursor();
   },
