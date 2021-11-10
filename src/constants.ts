@@ -1,4 +1,4 @@
-const NUM_KEYS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const NUM_KEYS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 // const OPERATION_KEYS = [" ", "+", "-", "*", "/"];
 const SPACE_KEYS = [" ", "Tab"];
 const ARROW_KEYS = ["ArrowLeft", "ArrowRight"];

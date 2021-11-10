@@ -18,7 +18,9 @@ export default class OperatorMultiply implements IOperator {
     // @ts-ignore
     const float_b = parseFloat(b);
 
-    newResult.push(float_a * float_b);
+    const res_ab = parseFloat((float_b * float_a).toPrecision(12));
+
+    newResult.push(res_ab);
 
     return newResult;
   }

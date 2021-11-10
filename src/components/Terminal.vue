@@ -15,6 +15,7 @@ defineEmits<{
   (e: "closeTerminal"): void;
 }>();
 
+// history commands
 let cmds = ref<ICommand[]>([]);
 let combinedCmd = ref<string>("");
 let message = ref<IMessage>({

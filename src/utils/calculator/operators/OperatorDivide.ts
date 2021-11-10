@@ -18,7 +18,9 @@ export default class OperatorDivide implements IOperator {
     // @ts-ignore
     const float_b = parseFloat(b);
 
-    newResult.push(float_b / float_a);
+    const res_ab = parseFloat((float_b / float_a).toPrecision(12));
+
+    newResult.push(res_ab);
 
     return newResult;
   }

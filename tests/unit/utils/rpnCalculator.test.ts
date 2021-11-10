@@ -33,6 +33,8 @@ describe("operators", function () {
     expect(operator.process([3, 1, 2])).toEqual([3, 2]);
     expect(operator.process([3, 2])).toEqual([6]);
 
+    expect(operator.process([0.1, 0.2])).toEqual([0.02])
+
     expect(operator.process([1])).toEqual([NaN]);
   });
 
@@ -40,6 +42,8 @@ describe("operators", function () {
     const operator = new OperatorDivide();
     expect(operator.process([3, 1, 2])).toEqual([3, 0.5]);
     expect(operator.process([3, 2])).toEqual([1.5]);
+
+    expect(operator.process([0.02, 0.1])).toEqual([0.2])
 
     expect(operator.process([1])).toEqual([NaN]);
   });
